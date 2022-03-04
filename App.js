@@ -107,6 +107,8 @@ export default class App extends Component {
         clearInterval (this.timer)
     }
 
+
+    //método para iniciar o timer do cronômetro
     start = () => {
 
         const now = new Date().getTime()
@@ -126,6 +128,7 @@ export default class App extends Component {
 
     }
 
+    //método para as voltas
     lap = () => {
 
         const timestamp = new Date().getTime()
@@ -144,6 +147,7 @@ export default class App extends Component {
 
     }
 
+    //método para parar o cronômetro
     stop =() => {
 
         clearInterval(this.timer)
@@ -161,7 +165,7 @@ export default class App extends Component {
         })
     }
 
-
+    //método para reiniciar a contagem do cronômetro
     reset = () => {
 
         this.setState({
@@ -173,6 +177,7 @@ export default class App extends Component {
         })
     }
 
+    //método 
     resume = () => {
 
         const now = new Date().getTime()
@@ -207,6 +212,7 @@ export default class App extends Component {
             />
             
             {laps.length === 0 && (
+               //primeira situação: cronômetro zerado apenas botão de iniciar habilitado
                <ButtonsRow>
                     <RoundButton
                         title = 'Voltar'
@@ -222,8 +228,9 @@ export default class App extends Component {
                     />
                 </ButtonsRow>
            )}
-
+            
             {start > 0 && (
+                //segunda situação: botão de parar habilitado e o contador de voltas funcionando
                 <ButtonsRow>
                     <RoundButton
                         title = 'Voltar'
@@ -241,6 +248,7 @@ export default class App extends Component {
            )}
 
              {laps.length > 0 && start === 0 &&(
+                 //terceira situação: pausa na contagem e botão de iniciar e reset habilitados com as uma lista de voltas cronometradas
                 <ButtonsRow>
                     <RoundButton
                         title = 'Reset'
