@@ -1,16 +1,16 @@
 import React, { Component } from 'react'
 import { StyleSheet,Text,View,ScrollView, TouchableOpacity } from 'react-native'
 
-/* instalar a bilbioteca moment - react-native install moment*/
-import moment from 'moment' 
+//instalar a bilbioteca moment - react-native install moment
+import moment from 'moment'
 
 
-
+//Função o componente timer
 function Timer ({ interval, style }){
     const pad = (n) => n < 10 ? '0' + n : n
     const duration = moment.duration(interval)
 
-    /*Dividir os milessegundos por 10 e especificar o número de casas decimais*/
+    //Dividir os milessegundos por 10 e especificar o número de casas decimais
     const centiseconds = Math.floor(duration.milliseconds()/10)
 
     return (
@@ -22,6 +22,7 @@ function Timer ({ interval, style }){
     )
 }
 
+//Funçao para o componente Botão
 function RoundButton({ title,color,background,onPress,disabled }){
     return(
         <TouchableOpacity onPress={() => ! disabled && onPress()}
@@ -35,26 +36,31 @@ function RoundButton({ title,color,background,onPress,disabled }){
     )
 }
 
+//Função para fazer o componente horizontal dos buttons
 function ButtonsRow ({children}){
     return(
         <View style = {styles.buttonsRow}>{children}</View>
     )
 }
 
+//Função para marcação de Volta
 function Lap ({ number,interval,fastest,slowest }){
     const lapStyle = [styles.lapText, fastest && styles.fastest, slowest && styles.slowest, ]
     return(
         <View style = {styles.lap}>
-            <Text style = {lapStyle}>Lap {number}</Text>
+            <Text style = {lapStyle}>Volta {number}</Text>
             <Timer style = {[lapStyle, styles.lapTimer]}
             interval = {interval} />
         </View>
     )
 }
 
+//Função para a Tabela de Voltas
 function LapsTable ({ laps,timer }){
     const finishedLaps = laps.slice(1)
-    let min =Number.MAX_SAFE_INTEGER
+    //Number.MAX_SAFE_INTEGER - método nativo Js para maior inteiro seguro
+    let min = Number.MAX_SAFE_INTEGER
+    //Number.MIN_SAFE_INTEGER - método nativo Js para menor inteiro seguro
     let max = Number.MIN_SAFE_INTEGER
     if (finishedLaps.length >= 2){
         finishedLaps.forEach(lap => {
@@ -62,7 +68,11 @@ function LapsTable ({ laps,timer }){
             if (lap > max) max = lap
         })
     }
+
+
+
     return (
+
         <ScrollView style = {styles.scrollView}>
             {laps.map((lap,index) => (
                 <Lap number = { laps.length - index}
@@ -78,121 +88,159 @@ function LapsTable ({ laps,timer }){
 
 
 export default class App extends Component {
-    constructor (props) {
-        super (props)
+
+    constructor(props) {
+
+        super(props)
+
         this.state = {
+
             start: 0,
             now:0,
-            laps:[ ],
+            laps: [],
         }
     }
 
+    //limpar o intervalo de tempo armazenado da aplicação
     componentWillUnmount () {
+
         clearInterval (this.timer)
     }
 
     start = () => {
+
         const now = new Date().getTime()
+
         this.setState({
+
             start: now,
             now,
             laps:[0],
+
         })
-        this.timer = setInterval(() => {
-            this.setState({now: new Date().getTime()})
+        this.timer = setInterval (() => {
+
+            this.setState ({ now: new Date().getTime() })
+
         },100)
+
     }
 
     lap = () => {
-        const timestamp = new Date().getTime()
-        const { laps,now,start } = this.state
-        const [firstLap, ...other] =laps
 
-        this.setState ({ 
+        const timestamp = new Date().getTime()
+
+        const { laps,now,start } = this.state
+
+        const [firstLap, ...other] = laps
+
+        this.setState ({
+
             laps: [0,firstLap + now - start, ...other],
             start: timestamp,
             now: timestamp,
-        })   
-        }
+
+        })
+
     }
 
     stop =() => {
+
         clearInterval(this.timer)
+
         const { laps,now,start } = this.state
+
         const [firstLap, ...other] =laps
 
-        this.setState ({ 
+        this.setState ({
+
             laps: [firstLap + now - start, ...other],
             start: 0,
             now: 0,
+
         })
     }
 
+
     reset = () => {
+
         this.setState({
+
             laps:[],
             start: 0,
             now: 0,
+
         })
     }
 
     resume = () => {
+
         const now = new Date().getTime()
+
         this.setState({
+
             start: now,
             now,
+
         })
+
         this.timer = setInterval(() => {
+
             this.setState({now: new Date().getTime()})
+
         },100)
+
     }
 
-    render () {
-        const { now,start,laps} = this.state
+   
+   render(){
+
+       const { now,start,laps} = this.state
         const timer = now - start
-    
-        return (
-        <View style = {styles.container}>
+
+       return(
+
+           <View style = {styles.container}>
            <Timer 
                 interval = {laps.reduce((total,curr) => total + curr, 0) + timer}
                 style = {styles.time}
             />
-           {laps.length === 0 && (
+            
+            {laps.length === 0 && (
                <ButtonsRow>
                     <RoundButton
-                        title = 'Lap'
+                        title = 'Voltar'
                         color = '#8B8B90'
-                        background = '#151515'
-                        onPress={this.reset}
+                        background = '#232323'
                         disabled
                     />
                     <RoundButton
-                        title = 'Start'
+                        title = 'Iniciar'
                         color = '#50D167'
                         background = '#1B361F'
-                        onPress = {this.resume}
+                        onPress = {this.start}
                     />
                 </ButtonsRow>
            )}
 
-           {start > 0 &&(
+            {start > 0 && (
                 <ButtonsRow>
                     <RoundButton
-                        title = 'Lap'
+                        title = 'Voltar'
                         color = '#FFFFFF'
                         background = '#3D3D3D'
-                        onPress={this.lap}
+                        onPress = {this.lap}
                     />
                     <RoundButton
-                        title = 'Stop'
+                        title = 'Parar'
                         color = '#E33935'
                         background = '#3C1715'
                         onPress = {this.stop}
                     />
                 </ButtonsRow>
            )}
-           
-           {laps.length > 0 && start === 0 &&(
+
+             {laps.length > 0 && start === 0 &&(
                 <ButtonsRow>
                     <RoundButton
                         title = 'Reset'
@@ -201,18 +249,23 @@ export default class App extends Component {
                         onPress={this.reset}
                     />
                     <RoundButton 
-                        title = 'Start'
+                        title = 'Iniciar'
                         color = '#50D167'
                         background = '#1B361F'
                         onPress = {this.resume}
                     />
                 </ButtonsRow>
            )}
+
             <LapsTable laps={laps} timer ={timer}/>
-        </View>
-        )
+
+        </View>            
+
+       );
     }
+
 }
+
 
 
 const styles = StyleSheet.create({
