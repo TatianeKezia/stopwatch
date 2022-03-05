@@ -200,15 +200,16 @@ export default class App extends Component {
    
    render(){
 
-       const { now,start,laps} = this.state
+        const { now,start,laps} = this.state
         const timer = now - start
 
        return(
 
            <View style = {styles.container}>
+           
            <Timer 
                 interval = {laps.reduce((total,curr) => total + curr, 0) + timer}
-                style = {styles.time}
+                style = {styles.timer}
             />
             
             {laps.length === 0 && (
@@ -248,10 +249,10 @@ export default class App extends Component {
            )}
 
              {laps.length > 0 && start === 0 &&(
-                 //terceira situação: pausa na contagem e botão de iniciar e reset habilitados com as uma lista de voltas cronometradas
+                 //terceira situação: pausa na contagem e botão de iniciar e reset habilitados com uma lista de voltas cronometradas
                 <ButtonsRow>
                     <RoundButton
-                        title = 'Reset'
+                        title = 'Reiniciar'
                         color = '#FFFFFF'
                         background = '#3D3D3D'
                         onPress={this.reset}
@@ -281,18 +282,18 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: '#0D0D0D',
         alignItems:'center',
-        paddingTop: 130,
+        paddingTop: 100,
         paddingHorizontal:20,
     },
-    time: {
+    timer: {
         color: '#FFFFFF',
         fontSize: 76,
         fontWeight: '200',
         width: 110,
     },
     button:{
-        width:80,
-        height:80,
+        width:120,
+        height:50,
         borderRadius: 40,
         justifyContent: 'center',
         alignItems: 'center',
@@ -301,8 +302,8 @@ const styles = StyleSheet.create({
         fontSize: 18,
     },
     buttonBorder: {
-        width:76,
-        height: 76,
+        width:118,
+        height: 48,
         borderRadius:38,
         borderWidth: 1,
         justifyContent: 'center',
@@ -333,7 +334,7 @@ const styles = StyleSheet.create({
         alignSelf: 'stretch',
     },
     fastest: {
-        color: '#4BC0F',
+        color: '#50D167',
     },
     slowest: {
         color:'#CC3531'
